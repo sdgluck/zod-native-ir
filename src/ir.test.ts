@@ -1,7 +1,7 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { z } from "zod";
-import { collect, fromJsonSchema, SchemaError } from "./index.ts";
+import { collect, fromJsonSchema, nestedName, SchemaError } from "./index.ts";
 
 const convert = (schema: z.ZodType, io: "input" | "output" = "output") =>
   fromJsonSchema(z.toJSONSchema(schema, { io, reused: "ref" }) as Record<string, unknown>, "fixture").t;
@@ -102,5 +102,24 @@ describe("collect", () => {
         ]),
       /DefaultedFixture is defined differently by In and Out/,
     );
+  });
+});
+
+describe("nestedName", () => {
+  test("singularises regular plurals and leaves words that only end in s whole", () => {
+    const cases: Array<[string, string]> = [
+      ["members", "Member"],
+      ["categories", "Category"],
+      ["matches", "Match"],
+      ["boxes", "Box"],
+      ["addresses", "Address"],
+      ["previous", "PreviousItem"],
+      ["status", "StatusItem"],
+      ["analysis", "AnalysisItem"],
+      ["class", "ClassItem"],
+      ["data", "DataItem"],
+    ];
+    for (const [key, name] of cases) assert.equal(nestedName(key, true), name, key);
+    assert.equal(nestedName("previous", false), "Previous");
   });
 });

@@ -220,12 +220,20 @@ export function camel(s: string): string {
   return /^[0-9]/.test(c) ? `v${c}` : c;
 }
 
-/** The nested type a property's inline shape becomes: `members` → `Member`. */
+/**
+ * The nested type a property's inline shape becomes: `members` → `Member`.
+ *
+ * Only the regular plurals are singularised. A word that merely ends in `s`
+ * (`previous`, `status`, `analysis`) gets `Item` rather than a truncation:
+ * `PreviousItem` reads oddly, `Previou` reads as a bug.
+ */
 export function nestedName(key: string, isArray: boolean): string {
   const p = pascal(key) || "Value";
   if (!isArray) return p;
-  if (p.endsWith("ies") && p.length > 4) return `${p.slice(0, -3)}y`;
-  if (p.endsWith("s") && !p.endsWith("ss") && p.length > 3) return p.slice(0, -1);
+  if (p.length > 4 && p.endsWith("ies")) return `${p.slice(0, -3)}y`;
+  // `matches` → `Match`, `boxes` → `Box`: the `es` belongs to the plural.
+  if (p.length > 4 && /(ches|shes|sses|xes|zes)$/.test(p)) return p.slice(0, -2);
+  if (p.length > 3 && p.endsWith("s") && !/(ss|us|is)$/.test(p)) return p.slice(0, -1);
   return `${p}Item`;
 }
 

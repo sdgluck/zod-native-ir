@@ -89,7 +89,13 @@ export interface Converted {
 export declare function fromJsonSchema(root: JsonSchema, where: string): Converted;
 export declare function pascal(s: string): string;
 export declare function camel(s: string): string;
-/** The nested type a property's inline shape becomes: `members` → `Member`. */
+/**
+ * The nested type a property's inline shape becomes: `members` → `Member`.
+ *
+ * Only the regular plurals are singularised. A word that merely ends in `s`
+ * (`previous`, `status`, `analysis`) gets `Item` rather than a truncation:
+ * `PreviousItem` reads oddly, `Previou` reads as a bug.
+ */
 export declare function nestedName(key: string, isArray: boolean): string;
 /**
  * The case name for one variant of a discriminated union. A boolean tag

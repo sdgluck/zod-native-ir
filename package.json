@@ -1,6 +1,6 @@
 {
   "name": "zod-native-ir",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Zod schemas → a small, language-neutral type IR for generating native (Swift, Kotlin) models.",
   "license": "MIT",
   "author": "Sam Gluck",
