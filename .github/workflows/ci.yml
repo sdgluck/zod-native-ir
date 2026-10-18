@@ -19,3 +19,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      # dist/ is committed so a git dependency needs no build step; it must
+      # be what the source builds to.
+      - name: dist/ is current
+        run: git diff --exit-code -- dist
